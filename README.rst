@@ -3,7 +3,7 @@ Templite
 
 A light-weight, fully functional, general purpose Python templating engine that fits in one single file.
 
-I'm am not the author, credits go to Thimo Kraemer and Tomer Filiba. You can get the original source here_.
+I'm not the author, credits go to Thimo Kraemer and Tomer Filiba. You can get the original source here_.
 
 I'm just packaging it and making it available on pypi and github to give it visibility.
 
