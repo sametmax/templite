@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 setup(
 
     name="templite",
-    version="0.1.4",
+    version="0.2",
     py_modules=['templite'],
     author="Sam et Max",
     author_email="lesametlemax@gmail.com",
