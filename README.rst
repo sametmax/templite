@@ -7,146 +7,108 @@ I'm not the author, credits go to Thimo Kraemer and Tomer Filiba. You can get th
 
 I'm just packaging it and making it available on pypi and github to give it visibility.
 
+(If the authors want the repository ownership, please contact me)
+
 Usage example::
 
     from templite import Templite
 
     template = r"""
-    This we already know:
-    <html>
-        <body>
-            ${
-            def say_hello(arg):
-                emit("hello ", arg, "<br>")
-            }$
 
-            <table>
-                ${
-                    for i in range(10):
-                        emit("<tr><td> ")
-                        say_hello(i)
-                        emit(" </tr></td>\n")
-                }$
-            </table>
+    This template demonstrates the usage of Templite.
 
-            ${emit("hi")}$
+    Within the defined delimiters we can write pure Python code:
 
-            tralala ${if x > 7:
-                say_hello("big x")}$ lala
-
-            $\{this is escaped starting delimiter
-
-            ${emit("this }\$ is an escaped ending delimiter")}$
-
-            ${# this is a python comment }$
-
-        </body>
-    </html>
-
-    But this is completely new:
-    ${if x > 7:}$
-        x is ${emit('greater')}$ than ${print x-1}$ Well, the print statement produces a newline.
-    ${:else:}$
-     This terminates the previous code block and starts an else code block
-     Also this would work: $\{:end}\$$\{else:}\$, but not this: $\{:end}\$ $\{else:}\$
-    ${:this terminates the else-block
-    only the starting colon is essential}$
-
-    So far you had to write:
     ${
-        if x > 3:
-            emit('''
-                After a condition you could not continue your template.
-                You had to write pure python code.
-                The only way was to use %%-based substitutions %s
-                ''' % x)
+        def say_hello(name):
+            write('Hello %s!' % name)
     }$
 
-    ${if x > 6:}$
-        With Templite+ it does not break your template ${print x}$
-    ${:elif x > 3:}$
-        This is great
-    ${:endif}$
+    And now we call the function: ${ say_hello('World') }$
 
-    ${for i in range(x-1):}$  Of course you can use any type of block statement ${i}$ ${"fmt: %s" % (i*2)}$
-    ${:else:}$
-    Single variables and expressions starting with quotes are substituted automatically.
-    Instead $\{emit(x)}\$ you can write $\{x}\$ or $\{'%s' % x}\$ or $\{"", x}\$
+    Escaped starting delimiter: $\{
+    ${ write('Escaped ending delimiter: }\$') }$
+
+    Also block statements are possible:
+
+    ${ if x > 10: }$
+    x is greater than 10
+    ${ :elif x > 5: }$
+    x is greater than 5
+    ${ :else: }$
+    x is not greater than 5
+    ${ :end-if / only the starting colon is essential to close a block }$
+
+    ${ for i in range(x): }$
+    loop index is ${ i }$
+    ${ :end-for }$
+
+    ${ # this is a python comment }$
+
+    Single variables and expressions starting with quotes are substituted
+    automatically:
+    Instead ${write(x)}$ you can write ${x}$ or ${'%s' % x}$ or ${"", x}$
     Therefore standalone statements like break, continue or pass
     must be enlosed by a semicolon: $\{continue;}\$
-    The end
-    ${:end-for}$
+
+    To include another template, just call "include":
+    ${ include('template.txt') }$
     """
 
     t = Templite(template)
     print t.render(x=8)
 
 
+
+    """
+
+
 Which outputs ::
 
 
-    This we already know:
-    <html>
-        <body>
+    This template demonstrates the usage of Templite.
 
-
-            <table>
-                <tr><td> hello 0<br> </tr></td>
-    <tr><td> hello 1<br> </tr></td>
-    <tr><td> hello 2<br> </tr></td>
-    <tr><td> hello 3<br> </tr></td>
-    <tr><td> hello 4<br> </tr></td>
-    <tr><td> hello 5<br> </tr></td>
-    <tr><td> hello 6<br> </tr></td>
-    <tr><td> hello 7<br> </tr></td>
-    <tr><td> hello 8<br> </tr></td>
-    <tr><td> hello 9<br> </tr></td>
-
-            </table>
-
-            hi
-
-            tralala hello big x<br> lala
-
-            ${this is escaped starting delimiter
-
-            this }$ is an escaped ending delimiter
+    Within the defined delimiters we can write pure Python code:
 
 
 
-        </body>
-    </html>
+    And now we call the function: Hello World!
 
-    But this is completely new:
+    Escaped starting delimiter: ${
+    Escaped ending delimiter: }$
 
-        x is greater than 7
-     Well, the print statement produces a newline.
+    Also block statements are possible:
 
 
-    So far you had to write:
-
-            After a condition you could not continue your template.
-            You had to write pure python code.
-            The only way was to use %-based substitutions 8
+    x is greater than 5
 
 
 
-        With Templite+ it does not break your template 8
+    loop index is 0
+
+    loop index is 1
+
+    loop index is 2
+
+    loop index is 3
+
+    loop index is 4
+
+    loop index is 5
+
+    loop index is 6
+
+    loop index is 7
 
 
 
-      Of course you can use any type of block statement 0 fmt: 0
-      Of course you can use any type of block statement 1 fmt: 2
-      Of course you can use any type of block statement 2 fmt: 4
-      Of course you can use any type of block statement 3 fmt: 6
-      Of course you can use any type of block statement 4 fmt: 8
-      Of course you can use any type of block statement 5 fmt: 10
-      Of course you can use any type of block statement 6 fmt: 12
 
-    Single variables and expressions starting with quotes are substituted automatically.
-    Instead ${emit(x)}$ you can write ${x}$ or ${'%s' % x}$ or ${"", x}$
+    Single variables and expressions starting with quotes are substituted
+    automatically:
+    Instead 8 you can write 8 or 8 or 8
     Therefore standalone statements like break, continue or pass
     must be enlosed by a semicolon: ${continue;}$
-    The end
 
+    To include another template, just call "include":
+    This is the content of template.txt
 .. _here: http://www.joonis.de/en/code/templite
